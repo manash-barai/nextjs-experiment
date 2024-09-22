@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import React, { useState, useEffect } from 'react';
 
 interface User {
@@ -15,15 +16,18 @@ const Card: React.FC<CardProps> = ({ users }) => {
 
     // Function to check screen size
     const checkMobileView = () => {
-        if (window.innerWidth <= 768) {
-            setIsMobile(true);
-        } else {
-            setIsMobile(false);
+        if (typeof window !== 'undefined') {
+            // Check if the window object is available (only on client-side)
+            if (window.innerWidth <= 768) {
+                setIsMobile(true);
+            } else {
+                setIsMobile(false);
+            }
         }
     };
 
     useEffect(() => {
-        // Check initial window size
+        // Only check window size after the component mounts
         checkMobileView();
 
         // Add event listener to monitor window resize
@@ -37,17 +41,22 @@ const Card: React.FC<CardProps> = ({ users }) => {
 
     return (
         <div>
-            <ul className={`flex  ${isMobile ? 'flex-col' : 'flex-wrap'}`}>
-                {users && users.map((user: User,index:number) => (
-                    <li
-                        className={`${
-                            isMobile ? 'w-full mb-4' : 'w-[40%] mr-4 mb-4'
-                        } ${index%2===0?'bg-orange-400':'bg-sky-400'} flex items-center justify-start border p-5`}
-                        key={user.id}
-                    >
-                        {user.id} - {user.name}
-                    </li>
-                ))}
+            <ul className={`flex ${isMobile ? 'flex-col' : 'flex-wrap'}`}>
+                {users &&
+                    users.map((user: User, index: number) => (
+                        <li
+                            className={`${
+                                isMobile ? 'w-full mb-4' : 'w-[40%] mr-4 mb-4'
+                            } ${
+                                index % 2 === 0
+                                    ? 'bg-orange-400'
+                                    : 'bg-sky-400'
+                            } flex items-center justify-start border p-5`}
+                            key={user.id}
+                        >
+                            {user.id} - {user.name}
+                        </li>
+                    ))}
             </ul>
         </div>
     );
